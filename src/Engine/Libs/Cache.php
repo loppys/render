@@ -28,9 +28,6 @@ class Cache
      */
     private $cacheFullFilePath;
 
-    /**
-     * @var
-     */
     private $cacheTime;
 
     /**
@@ -55,7 +52,7 @@ class Cache
         $this->cacheFileName = substr($md5hash, 2, 30);
 
         $this->cacheFullFilePath = $this->cacheFolder . substr($md5hash, 0, 1) . '/' . substr($md5hash, 1, 1) . '/';
-        $this->cacheFullFileName = $this->cacheFullFilePath . $this->cacheFileName;
+        $this->cacheFullFileName = $this->cacheFullFilePath . $this->cacheFileName . '.php';
     }
 
     public function cacheEnable(): void
@@ -106,7 +103,7 @@ class Cache
         $this->cache = @fread($fp, filesize($this->cacheFullFileName));
         @fclose($fp);
 
-        return unserialize($this->cache);
+        return $this->cache;
     }
 
     public function updateCacheData($newData): bool
@@ -116,7 +113,7 @@ class Cache
         }
 
         $this->cache = $newData;
-        $output = serialize($this->cache);
+        $output = $this->cache;
 
         if (!@file_exists($this->cacheFullFilePath)) {
             @mkdir($this->cacheFullFilePath, 0777, true);
@@ -133,6 +130,11 @@ class Cache
     public function getCacheFileName(): string
     {
         return $this->cacheFileName;
+    }
+
+    public function getFilePath(): string
+    {
+        return $this->cacheFullFileName;
     }
 
     public function getCacheFolder(): string
