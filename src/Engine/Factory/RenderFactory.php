@@ -59,6 +59,14 @@ class RenderFactory
         }
     }
 
+    public function runTemplate(string $tpl): void
+    {
+        $this->manager->setTemplateList([$tpl], false);
+        $this->cache = new Cache($this->getDataKey());
+
+        $this->render();
+    }
+
     protected function getDataKey(): string
     {
         return $this->manager->getDataKey();

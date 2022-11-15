@@ -47,11 +47,18 @@ abstract class DefaultStorage
         return $this;
     }
 
-    public function getDataByName(string $name): mixed
+    /**
+     * @param string $name
+     *
+     * @return mixed
+     */
+    public function getDataByName(string $name)
     {
-        if (array_key_exists($name, $this->data)) {
-            return $this->data[$name];
+        if (!array_key_exists($name, $this->data)) {
+            return '';
         }
+
+        return $this->data[$name];
     }
 
     public function getDataList(): array

@@ -2,32 +2,65 @@
 
 namespace Render\Engine\Data;
 
-use Render\Engine\Storage\ConstStorage;
-use Render\Engine\Storage\DataStorage;
+use Render\Engine\DefaultManager;
 
-class Manager
+class Manager extends DefaultManager
 {
-    private $templateFolder = ConstStorage::TEMPLATE_FOLDER;
+    protected $style = [];
 
-    protected $tpl = [];
+    protected $meta = [];
 
-    protected $js = [];
+    protected $title = ':)';
 
-    /**
-     * @var string
-     */
-    private $dataKey;
-
-    /**
-     * @var DataStorage
-     */
-    private $dataStorage;
-
-    public function __construct(DataStorage $dataStorage)
+    public function getHead(): string
     {
-        $this->dataStorage = $dataStorage;
+        $meta = implode(PHP_EOL, $this->meta);
+        $style = implode(PHP_EOL, $this->style);
 
-        $this->templateFolder = $_SERVER['DOCUMENT_ROOT'] . $this->templateFolder;
+        $jsScript = [];
+        $jsPath = [];
+
+        foreach ($this->getJsList() as $info) {
+            if (!$info['skipPage'] && !empty($info['script'])) {
+                $jsScript[] = '<script type="text/javascript">' . $info['script'] . '</script>' . PHP_EOL;
+            }
+
+            if (!empty($info['path'])) {
+                $jsPath[] = '<script src="' . $info['path'] . '"></script>' . PHP_EOL;
+            }
+        }
+
+        $jsScript = implode(PHP_EOL, $jsScript);
+        $jsPath = implode(PHP_EOL, $jsPath);
+
+        return <<<HTML
+<head>
+    <title> {$this->getTitle()} </title>
+    {$meta}
+    {$jsPath}
+    {$style}
+    {$jsScript}
+</head>
+HTML;
+    }
+
+    public function addMetaData(string $name, string $value): self
+    {
+        $this->meta[] = '<meta ' . $name . '="' . $value . '">';
+
+        return $this;
+    }
+
+    public function setTitle(string $title): self
+    {
+        $this->title = $title;
+
+        return $this;
+    }
+
+    public function getTitle(): string
+    {
+        return $this->title;
     }
 
     public function addTemplate(string $path): self
@@ -46,24 +79,6 @@ class Manager
         return $this;
     }
 
-    public function getTemplateList(): array
-    {
-        return $this->tpl;
-    }
-
-    public function getDataKey(): string
-    {
-        if (!empty($this->dataKey)) {
-            return $this->dataKey;
-        }
-
-        $source = implode(' ', $this->tpl);
-
-        $this->dataKey = md5($source);
-
-        return $this->dataKey;
-    }
-
     public function setTemplateList(array $pathList, bool $merge = true): self
     {
         if ($merge) {
@@ -75,13 +90,54 @@ class Manager
         return $this;
     }
 
-    public function getVariableList(): array
+    /**
+     * @param string $name
+     * @param string $script
+     *
+     * @param bool $skipPage - добавить скрипт в конец страницы
+     *
+     * @return Manager
+     */
+    public function initJsByName(string $name, string $script, bool $skipPage = false): self
     {
-        return $this->dataStorage->getVariableList();
+        if (empty($this->js[$name])) {
+            $this->js[$name] = [
+                'script' => $script,
+                'skipPage' => $skipPage
+            ];
+        }
+
+        return $this;
     }
 
-    public function getTemplateFolder(): string
+    public function initJs(string $script, bool $skipPage = false): self
     {
-        return $this->templateFolder;
+        $this->js[] = [
+            'script' => $script,
+            'skipPage' => $skipPage
+        ];
+
+        return $this;
+    }
+
+    public function initJsPath(string $path): self
+    {
+        $this->js[] = [
+            'path' => $path
+        ];
+
+        return $this;
+    }
+
+    public function getJsInfoByName(string $name): array
+    {
+        return $this->js[$name] ?: [];
+    }
+
+    public function addStyle(string $path): self
+    {
+        $this->style[] = '<link rel="stylesheet" href="' . $path . '">';
+
+        return $this;
     }
 }

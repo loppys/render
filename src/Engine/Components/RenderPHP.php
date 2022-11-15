@@ -32,7 +32,7 @@ class RenderPHP implements RenderInterface
         return $this;
     }
 
-    public function render(): void
+    public function render(string $lang = 'ru'): void
     {
         $tpl = '';
 
@@ -51,7 +51,7 @@ class RenderPHP implements RenderInterface
                 $tpl = ob_get_contents();
             }
         } else {
-            $tmpFile = $this->getCompileTemplate();
+            $tmpFile = $this->getCompileTemplate($lang);
 
             include $tmpFile;
 
@@ -65,23 +65,65 @@ class RenderPHP implements RenderInterface
         print $tpl;
     }
 
-    protected function getCompileTemplate(): string
+    protected function getCompileTemplate(string $lang = 'ru'): string
     {
         $tplFolder = $this->manager->getTemplateFolder();
-
         $tempFile = $tplFolder . $this->manager->getDataKey() . '.php';
 
-        foreach ($this->manager->getTemplateList() as $template) {
-            $tpl = $tplFolder . $template;
+        $headerPath = $this->manager->getDefaultTemplatePath('header');
+        $footerPath = $this->manager->getDefaultTemplatePath('footer');
 
-            if (file_exists($tpl)) {
-                file_put_contents($tempFile, file_get_contents($tpl), FILE_APPEND);
+        $this->addHtml('<!DOCTYPE html>', $tempFile);
+        $this->addHtml('<html lang="'. $lang .'">', $tempFile);
+
+        $this->addHtml($this->manager->getHead(), $tempFile);
+
+        $this->addHtml('<body>', $tempFile);
+
+        $this->connectTemplate($headerPath, $tempFile);
+
+        foreach ($this->manager->getTemplateList() as $template) {
+            $this->connectTemplate($tplFolder . $template, $tempFile);
+        }
+
+        $this->connectTemplate($footerPath, $tempFile);
+
+        foreach ($this->manager->getJsList() as $info) {
+            if ($info['skipPage']) {
+                $this->addHtml('<script type="text/javascript">' . $info['script'] . '</script>' . PHP_EOL, $tempFile);
             }
         }
+
+        $this->addHtml('</body>', $tempFile);
+        $this->addHtml('</html>', $tempFile);
 
         $this->cache->updateCacheData(file_get_contents($tempFile));
 
         return $tempFile;
+    }
+
+    protected function connectTemplate(string $path, string $savePath): void
+    {
+        if (file_exists($path)) {
+            file_put_contents($savePath, file_get_contents($path), FILE_APPEND);
+        }
+    }
+
+    protected function addHtml(string $html, string $savePath = '', bool $print = false, bool $return = true): string
+    {
+        if (!empty($savePath)) {
+            file_put_contents($savePath, $html . PHP_EOL, FILE_APPEND);
+        }
+
+        if ($print) {
+            print $html;
+        }
+
+        if ($return) {
+            return $html;
+        }
+
+        return '';
     }
 }
 
