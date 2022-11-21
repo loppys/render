@@ -63,9 +63,18 @@ class DefaultManager
         }
     }
 
-    public function setDefaultTemplatePath(string $name, string $path): void
+    public function setDefaultTemplatePath(string $name, string $path): self
     {
         $this->defaultTemplateList[$name] = $this->getTemplateFolder() . $path;
+
+        return $this;
+    }
+
+    public function setTemplateFolder(string $templateFolder): self
+    {
+        $this->templateFolder = $_SERVER['DOCUMENT_ROOT'] . $templateFolder;
+
+        return $this;
     }
 
     public function getVariableList(): array
