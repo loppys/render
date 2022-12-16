@@ -36,6 +36,10 @@ class RenderFactory
 
         $this->cache = new Cache($this->getDataKey());
 
+        if ($this->manager->getConfig()->get('dontSaveCache')) {
+            $this->cache->clearCache();
+        }
+
         if (!class_exists($renderClass) || empty($renderClass)) {
             $this->renderClass = self::DEFAULT_RENDER;
         } else {
@@ -59,9 +63,17 @@ class RenderFactory
         }
     }
 
+    public function runTemplateList(array $tpl): void
+    {
+        $this->manager->setTemplateList($tpl, false);
+        $this->cache = new Cache($this->getDataKey());
+
+        $this->render();
+    }
+
     public function runTemplate(string $tpl): void
     {
-        $this->manager->setTemplateList([$tpl], false);
+        $this->manager->setTemplate($tpl);
         $this->cache = new Cache($this->getDataKey());
 
         $this->render();
