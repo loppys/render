@@ -127,6 +127,29 @@ class Cache
         return true;
     }
 
+    public function clearCache(string $path = ''): bool
+    {
+        if (empty($path)) {
+            $path = $this->cacheFolder;
+        }
+
+        if (is_file($path)) {
+            return unlink($path);
+        }
+
+        if (is_dir($path)) {
+            foreach (scandir($path) as $item) {
+                if ($item !== '.' && $item !== '..') {
+                    $this->clearCache($path . DIRECTORY_SEPARATOR . $item);
+                }
+            }
+
+            return rmdir($path);
+        }
+
+        return false;
+    }
+
     public function getCacheFileName(): string
     {
         return $this->cacheFileName;
