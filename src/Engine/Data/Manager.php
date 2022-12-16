@@ -90,6 +90,13 @@ HTML;
         return $this;
     }
 
+    public function setTemplate(string $path): self
+    {
+        $this->tpl = [$path];
+
+        return $this;
+    }
+
     /**
      * @param string $name
      * @param string $script
