@@ -37,7 +37,7 @@ class RenderFactory
         $this->cache = new Cache($this->getDataKey());
 
         if ($this->manager->getConfig()->get('dontSaveCache')) {
-            $this->cache->clearCache();
+            Cache::clearCache();
         }
 
         if (!class_exists($renderClass) || empty($renderClass)) {
