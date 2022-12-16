@@ -67,6 +67,8 @@ class RenderPHP implements RenderInterface
 
     protected function getCompileTemplate(string $lang = 'ru'): string
     {
+        $config = $this->manager->getConfig();
+
         $tplFolder = $this->manager->getTemplateFolder();
         $tempFile = $tplFolder . $this->manager->getDataKey() . '.php';
 
@@ -80,13 +82,17 @@ class RenderPHP implements RenderInterface
 
         $this->addHtml('<body>', $tempFile);
 
-        $this->connectTemplate($headerPath, $tempFile);
+        if (!$config->get('ignoreHeader')) {
+            $this->connectTemplate($headerPath, $tempFile);
+        }
 
         foreach ($this->manager->getTemplateList() as $template) {
             $this->connectTemplate($tplFolder . $template, $tempFile);
         }
 
-        $this->connectTemplate($footerPath, $tempFile);
+        if (!$config->get('ignoreFooter')) {
+            $this->connectTemplate($footerPath, $tempFile);
+        }
 
         foreach ($this->manager->getJsList() as $info) {
             if ($info['skipPage']) {
