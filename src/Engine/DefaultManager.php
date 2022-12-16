@@ -4,8 +4,10 @@ namespace Render\Engine;
 
 use Render\Engine\Storage\ConstStorage;
 use Render\Engine\Storage\DataStorage;
+use Render\Engine\Data\Config;
+use Render\Engine\ManagerInterface;
 
-class DefaultManager
+class DefaultManager implements ManagerInterface
 {
     protected $templateFolder = ConstStorage::TEMPLATE_FOLDER;
 
@@ -28,8 +30,17 @@ class DefaultManager
      */
     protected $defaultTemplateList;
 
+    /**
+     * @var Config
+     */
+    private $config;
+
     public function __construct(DataStorage $dataStorage)
     {
+        if (empty($this->config)) {
+            $this->initConfig();
+        }
+
         $this->dataStorage = $dataStorage;
         $this->templateFolder = $_SERVER['DOCUMENT_ROOT'] . $this->templateFolder;
 
@@ -38,15 +49,21 @@ class DefaultManager
 
     public function getDataKey(): string
     {
-        if (!empty($this->dataKey)) {
-            return $this->dataKey;
-        }
-
         $source = implode(' ', $this->tpl);
 
         $this->dataKey = md5($source);
 
         return $this->dataKey;
+    }
+
+    protected function initConfig(): void
+    {
+        $this->config = new Config();
+    }
+
+    public function getConfig(): Config
+    {
+        return $this->config;
     }
 
     protected function initDefaultTemplate(): void
