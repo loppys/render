@@ -2,11 +2,13 @@
 
 namespace Render\Engine;
 
-abstract class DefaultStorage
+use Render\Engine\DataStorageInterface;
+
+abstract class DefaultStorage implements DataStorageInterface
 {
     protected $data = [];
 
-    public function add(string $name, $value): self
+    public function add(string $name, $value): DataStorageInterface
     {
         if (!array_key_exists($name, $this->data)) {
             $this->data[$name] = $value;
@@ -15,7 +17,7 @@ abstract class DefaultStorage
         return $this;
     }
 
-    public function replace(string $name, $value): self
+    public function replace(string $name, $value): DataStorageInterface
     {
         if (array_key_exists($name, $this->data)) {
             $this->set($name, $value);
@@ -24,7 +26,7 @@ abstract class DefaultStorage
         return $this;
     }
 
-    public function delete(string $name): self
+    public function delete(string $name): DataStorageInterface
     {
         if (array_key_exists($name, $this->data)) {
             unset($this->data[$name]);
@@ -33,14 +35,14 @@ abstract class DefaultStorage
         return $this;
     }
 
-    public function set(string $name, $value): self
+    public function set(string $name, $value): DataStorageInterface
     {
         $this->data[$name] = $value;
 
         return $this;
     }
 
-    public function setData(array $data): self
+    public function setData(array $data): DataStorageInterface
     {
         $this->data = $data;
 
