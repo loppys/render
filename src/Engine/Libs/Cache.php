@@ -37,6 +37,11 @@ class Cache
 
     private $cacheEnabled = true;
 
+    /**
+     * @var Cache
+     */
+    private static $instance;
+
     public function __construct(string $dataName)
     {
         if (ConstStorage::CACHE_ENABLED !== true) {
@@ -127,10 +132,16 @@ class Cache
         return true;
     }
 
-    public function clearCache(string $path = ''): bool
+    public static function clearCache(string $path = ''): bool
     {
+        if (empty(self::$instance)) {
+            self::$instance = new static('clear_cache');
+        }
+
+        $obj = self::$instance;
+
         if (empty($path)) {
-            $path = $this->cacheFolder;
+            $path = $obj->cacheFolder;
         }
 
         if (is_file($path)) {
@@ -140,7 +151,7 @@ class Cache
         if (is_dir($path)) {
             foreach (scandir($path) as $item) {
                 if ($item !== '.' && $item !== '..') {
-                    $this->clearCache($path . DIRECTORY_SEPARATOR . $item);
+                    $obj::clearCache($path . DIRECTORY_SEPARATOR . $item);
                 }
             }
 
