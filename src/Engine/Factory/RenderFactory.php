@@ -20,40 +20,30 @@ class RenderFactory
      */
     private $manager;
 
-    /**
-     * @var string
-     */
-    private $renderClass;
-
-    /**
-     * @var Cache
-     */
-    private $cache;
-
-    public function __construct(Manager $manager, string $renderClass = '')
+    public function __construct(Manager $manager)
     {
         $this->manager = $manager;
+    }
 
-        $this->cache = new Cache($this->getDataKey());
+    public function render(string $renderClass = ''): void
+    {
+        if (!class_exists($renderClass) || empty($renderClass)) {
+            $renderClass = self::DEFAULT_RENDER;
+        } else {
+            $renderClass = $renderClass;
+        }
+
+        $cache = new Cache($this->getDataKey());
 
         if ($this->manager->getConfig()->get('dontSaveCache')) {
             Cache::clearCache();
         }
 
-        if (!class_exists($renderClass) || empty($renderClass)) {
-            $this->renderClass = self::DEFAULT_RENDER;
-        } else {
-            $this->renderClass = $renderClass;
-        }
-    }
-
-    public function render(): void
-    {
         try {
-            $obj = new $this->renderClass();
+            $obj = new $renderClass();
 
             if ($obj instanceof RenderInterface) {
-                $obj->init($this->manager, $this->cache)->render();
+                $obj->init($this->manager, $cache)->render();
             } else {
                 ErrorHelper::runException(666);
             }
@@ -66,7 +56,6 @@ class RenderFactory
     public function runTemplateList(array $tpl): void
     {
         $this->manager->setTemplateList($tpl, false);
-        $this->cache = new Cache($this->getDataKey());
 
         $this->render();
     }
@@ -74,7 +63,6 @@ class RenderFactory
     public function runTemplate(string $tpl): void
     {
         $this->manager->setTemplate($tpl);
-        $this->cache = new Cache($this->getDataKey());
 
         $this->render();
     }
