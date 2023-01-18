@@ -44,9 +44,9 @@ class Manager extends DefaultManager
 HTML;
     }
 
-    public function addMetaData(string $name, string $value): self
+    public function addMetaData(string $name, string $value, string $content): self
     {
-        $this->meta[] = '<meta ' . $name . '="' . $value . '">';
+        $this->meta[] = '<meta ' . $name . '="' . $value . '" content="' . $content . '">';
 
         return $this;
     }
