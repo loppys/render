@@ -6,41 +6,23 @@ use Render\Engine\Storage\ConstStorage;
 
 class Cache
 {
-    private $cache;
+    private mixed $cache;
 
-    /**
-     * @var string
-     */
-    private $cacheFileName;
+    private string $cacheFileName;
 
-    /**
-     * @var string
-     */
-    private $cacheFolder;
+    private string $cacheFolder;
 
-    /**
-     * @var string
-     */
-    private $cacheFullFileName;
+    private string $cacheFullFileName;
 
-    /**
-     * @var string
-     */
-    private $cacheFullFilePath;
+    private string $cacheFullFilePath;
 
-    private $cacheTime;
+    private int $cacheTime;
 
-    /**
-     * @var string
-     */
-    private $dataName;
+    private string $dataName;
 
-    private $cacheEnabled = true;
+    private bool $cacheEnabled = true;
 
-    /**
-     * @var Cache
-     */
-    private static $instance;
+    private static Cache $instance;
 
     public function __construct(string $dataName)
     {

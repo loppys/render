@@ -4,12 +4,7 @@ namespace Render\Engine;
 
 class DefaultConfig
 {
-    /**
-     * @param string $property
-     *
-     * @return mixed
-     */
-    public function get(string $property)
+    public function get(string $property): mixed
     {
         if (property_exists($this, $property)) {
             return $this->{$property};
@@ -18,13 +13,7 @@ class DefaultConfig
         return '';
     }
 
-    /**
-     * @param string $name
-     * @param mixed $value
-     *
-     * @return DefaultConfig
-     */
-    public function set(string $name, $value): DefaultConfig
+    public function set(string $name, mixed $value): DefaultConfig
     {
         if (property_exists($this, $name)) {
             $this->{$name} = $value;

@@ -15,10 +15,7 @@ class RenderFactory
     public const DEFAULT_RENDER = RenderPHP::class;
     public const SMARTY_RENDER = RenderSmarty::class;
 
-    /**
-     * @var Manager
-     */
-    private $manager;
+    private Manager $manager;
 
     public function __construct(Manager $manager)
     {
@@ -29,8 +26,6 @@ class RenderFactory
     {
         if (!class_exists($renderClass) || empty($renderClass)) {
             $renderClass = self::DEFAULT_RENDER;
-        } else {
-            $renderClass = $renderClass;
         }
 
         $cache = new Cache($this->getDataKey());
