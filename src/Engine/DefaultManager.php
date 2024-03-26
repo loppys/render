@@ -9,31 +9,19 @@ use Render\Engine\ManagerInterface;
 
 class DefaultManager implements ManagerInterface
 {
-    protected $templateFolder = ConstStorage::TEMPLATE_FOLDER;
+    protected string $templateFolder = ConstStorage::TEMPLATE_FOLDER;
 
-    protected $tpl = [];
+    protected array $tpl = [];
 
-    protected $js = [];
+    protected array $js = [];
 
-    /**
-     * @var DataStorage
-     */
-    protected $dataStorage;
+    protected DataStorage $dataStorage;
 
-    /**
-     * @var string
-     */
-    private $dataKey;
+    private string $dataKey;
 
-    /**
-     * @var array
-     */
-    protected $defaultTemplateList;
+    protected array $defaultTemplateList = [];
 
-    /**
-     * @var Config
-     */
-    private $config;
+    private Config $config;
 
     public function __construct(DataStorage $dataStorage)
     {
@@ -80,14 +68,14 @@ class DefaultManager implements ManagerInterface
         }
     }
 
-    public function setDefaultTemplatePath(string $name, string $path): self
+    public function setDefaultTemplatePath(string $name, string $path): static
     {
         $this->defaultTemplateList[$name] = $this->getTemplateFolder() . $path;
 
         return $this;
     }
 
-    public function setTemplateFolder(string $templateFolder): self
+    public function setTemplateFolder(string $templateFolder): static
     {
         $this->templateFolder = $_SERVER['DOCUMENT_ROOT'] . $templateFolder;
 

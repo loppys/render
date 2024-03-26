@@ -6,18 +6,9 @@ use Render\Engine\DefaultConfig;
 
 class Config extends DefaultConfig
 {
-    /**
-     * @var bool
-     */
-    protected $ignoreHeader = false;
+    protected bool $ignoreHeader = false;
 
-    /**
-     * @var bool
-     */
-    protected $ignoreFooter = false;
+    protected bool $ignoreFooter = false;
 
-    /**
-     * @var bool
-     */
-    protected $dontSaveCache = false;
+    protected bool $dontSaveCache = false;
 }

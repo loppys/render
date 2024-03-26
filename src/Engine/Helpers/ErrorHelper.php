@@ -6,7 +6,7 @@ use RuntimeException;
 
 class ErrorHelper
 {
-    private static $messageList = [
+    private static array $messageList = [
         666 => 'Что-то явно пошло не так!',
         500 => 'Internal Server Error',
         401 => 'Unauthorized',

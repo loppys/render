@@ -8,21 +8,21 @@ class DataStorage extends DefaultStorage
 {
     public const DEFAULT_DATA_NAME = '_data';
 
-    public function setVariableByName(string $name, $value): self
+    public function setVariableByName(string $name, mixed $value): static
     {
         $this->set($name, $value);
 
         return $this;
     }
 
-    public function addVariable($value): self
+    public function addVariable(mixed $value): static
     {
         $this->data[self::DEFAULT_DATA_NAME][] = $value;
 
         return $this;
     }
 
-    public function getVariableByName(string $name)
+    public function getVariableByName(string $name): mixed
     {
         return $this->getDataByName($name);
     }

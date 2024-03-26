@@ -8,20 +8,11 @@ use Render\Engine\RenderInterface;
 
 class RenderPHP implements RenderInterface
 {
-    /**
-     * @var array
-     */
-    protected $variable;
+    protected array $variable;
 
-    /**
-     * @var Manager
-     */
-    private $manager;
+    private Manager $manager;
 
-    /**
-     * @var Cache
-     */
-    private $cache;
+    private Cache $cache;
 
     public function init(Manager $manager, Cache $cache): RenderInterface
     {
