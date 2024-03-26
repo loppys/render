@@ -9,7 +9,6 @@
   "license": "MIT",
   "require": {
     "php": ">=8.0",
-    "symfony/http-foundation": "6.3.x-dev",
     "smarty/smarty": "^4.3"
   },
   "require-dev": {
