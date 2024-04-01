@@ -9,11 +9,8 @@
   "license": "MIT",
   "require": {
     "php": ">=8.0",
-    "smarty/smarty": "^4.3"
-  },
-  "require-dev": {
-    "filp/whoops": "^2.15",
-    "phpunit/phpunit": "10.2.x-dev"
+    "smarty/smarty": "^4.3",
+    "vengine/cache": "^1.0"
   },
   "minimum-stability": "dev"
 }
