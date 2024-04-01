@@ -35,7 +35,7 @@ class Manager extends DefaultManager
 
         return <<<HTML
 <head>
-    <title> {$this->getTitle()} </title>
+    <title> <?php print \$this->getTitle() ?> </title>
     {$meta}
     {$jsPath}
     {$style}

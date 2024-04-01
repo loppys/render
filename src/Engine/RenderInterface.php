@@ -10,4 +10,6 @@ interface RenderInterface
     public function init(Manager $manager, Cache $cache): RenderInterface;
 
     public function render(): void;
+
+    public function getTitle(): string;
 }

@@ -33,27 +33,19 @@ class RenderPHP implements RenderInterface
 
         ob_start();
 
-        if ($this->cache->initCacheData()) {
-            $cacheTemplate = $this->cache->getCacheData();
+        $cachePath = $this->cache->getPath($this->manager->getDataKey());
 
-            if (!empty($cacheTemplate)) {
-                include $this->cache->getFilePath();
-
-                $tpl = ob_get_contents();
-            }
+        if (file_exists($cachePath)) {
+            include $cachePath;
         } else {
-            $tmpFile = $this->getCompileTemplate($lang);
-
-            include $tmpFile;
-
-            $tpl = ob_get_contents();
-
-            unlink($tmpFile);
+            include $this->getCompileTemplate($lang);
         }
+
+        $result = ob_get_contents();
 
         ob_clean();
 
-        print $tpl;
+        print $result;
     }
 
     protected function getCompileTemplate(string $lang = 'ru'): string
@@ -61,13 +53,13 @@ class RenderPHP implements RenderInterface
         $config = $this->manager->getConfig();
 
         $tplFolder = $this->manager->getTemplateFolder();
-        $tempFile = $tplFolder . $this->manager->getDataKey() . '.php';
+        $tempFile = $this->cache->getPath($this->manager->getDataKey());
 
         $headerPath = $this->manager->getDefaultTemplatePath('header');
         $footerPath = $this->manager->getDefaultTemplatePath('footer');
 
         $this->addHtml('<!DOCTYPE html>', $tempFile);
-        $this->addHtml('<html lang="'. $lang .'">', $tempFile);
+        $this->addHtml('<html lang="<?php print $lang ?>">', $tempFile);
 
         $this->addHtml($this->manager->getHead(), $tempFile);
 
@@ -94,8 +86,6 @@ class RenderPHP implements RenderInterface
         $this->addHtml('</body>', $tempFile);
         $this->addHtml('</html>', $tempFile);
 
-        $this->cache->updateCacheData(file_get_contents($tempFile));
-
         return $tempFile;
     }
 
@@ -121,6 +111,11 @@ class RenderPHP implements RenderInterface
         }
 
         return '';
+    }
+
+    public function getTitle(): string
+    {
+        return $this->manager->getTitle();
     }
 }
 
