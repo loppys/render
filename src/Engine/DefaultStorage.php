@@ -6,9 +6,9 @@ use Render\Engine\DataStorageInterface;
 
 abstract class DefaultStorage implements DataStorageInterface
 {
-    protected $data = [];
+    protected array $data = [];
 
-    public function add(string $name, $value): DataStorageInterface
+    public function add(string $name, mixed $value): DataStorageInterface
     {
         if (!array_key_exists($name, $this->data)) {
             $this->data[$name] = $value;
@@ -17,7 +17,7 @@ abstract class DefaultStorage implements DataStorageInterface
         return $this;
     }
 
-    public function replace(string $name, $value): DataStorageInterface
+    public function replace(string $name, mixed $value): DataStorageInterface
     {
         if (array_key_exists($name, $this->data)) {
             $this->set($name, $value);
@@ -35,7 +35,7 @@ abstract class DefaultStorage implements DataStorageInterface
         return $this;
     }
 
-    public function set(string $name, $value): DataStorageInterface
+    public function set(string $name, mixed $value): DataStorageInterface
     {
         $this->data[$name] = $value;
 
@@ -49,12 +49,7 @@ abstract class DefaultStorage implements DataStorageInterface
         return $this;
     }
 
-    /**
-     * @param string $name
-     *
-     * @return mixed
-     */
-    public function getDataByName(string $name)
+    public function getDataByName(string $name): mixed
     {
         if (!array_key_exists($name, $this->data)) {
             return '';
