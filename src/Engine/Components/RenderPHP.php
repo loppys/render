@@ -5,7 +5,12 @@ namespace Render\Engine\Components;
 use Render\Engine\Data\Manager;
 use Render\Engine\Libs\Cache;
 use Render\Engine\RenderInterface;
+use Vengine\Render\RenderManager;
 
+/**
+ * @deprecated
+ * @see RenderManager
+ */
 class RenderPHP implements RenderInterface
 {
     protected array $variable;

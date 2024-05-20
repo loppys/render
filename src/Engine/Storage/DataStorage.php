@@ -3,7 +3,12 @@
 namespace Render\Engine\Storage;
 
 use Render\Engine\DefaultStorage;
+use Vengine\Render\Storages\VariableStorage;
 
+/**
+ * @deprecated
+ * @see VariableStorage
+ */
 class DataStorage extends DefaultStorage
 {
     public const DEFAULT_DATA_NAME = '_data';

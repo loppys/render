@@ -3,13 +3,17 @@
 namespace Render\Engine\Factory;
 
 use Render\Engine\Components\RenderPHP;
-use Render\Engine\Components\RenderSmarty;
 use Render\Engine\Data\Manager;
 use Render\Engine\Helpers\ErrorHelper;
 use Render\Engine\RenderInterface;
 use Render\Engine\Libs\Cache;
 use RuntimeException;
+use Vengine\Render\RenderManager;
 
+/**
+ * @deprecated
+ * @see RenderManager or Builders or Tag system
+ */
 class RenderFactory
 {
     public const DEFAULT_RENDER = RenderPHP::class;
