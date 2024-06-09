@@ -24,7 +24,7 @@ abstract class AbstractBuilder implements BuilderInterface
     {
         $this->assetCollection = new AssetCollection();
         $this->tagCollection = new TagCollection();
-        $this->buffer = new MessageBuffer();
+        $this->buffer = MessageBuffer::getInstance();
     }
 
     abstract public function build(): BundleInterface;
@@ -32,7 +32,7 @@ abstract class AbstractBuilder implements BuilderInterface
     public function getDataKey(): string
     {
         if (empty($this->dataKey)) {
-            $this->dataKey = $_SERVER['REQUEST_URI'];
+            $this->dataKey = md5($_SERVER['REQUEST_URI']);
         }
 
         return $this->dataKey;

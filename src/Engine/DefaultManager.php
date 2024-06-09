@@ -6,12 +6,7 @@ use Render\Engine\Storage\ConstStorage;
 use Render\Engine\Storage\DataStorage;
 use Render\Engine\Data\Config;
 use Render\Engine\ManagerInterface;
-use Vengine\Render\RenderManager;
 
-/**
- * @deprecated
- * @see RenderManager
- */
 class DefaultManager implements ManagerInterface
 {
     protected string $templateFolder = ConstStorage::TEMPLATE_FOLDER;

@@ -4,6 +4,7 @@ namespace Vengine\Render\Tags;
 
 use Vengine\Render\Collections\TagCollection;
 use Vengine\Render\Interfaces\TagInterface;
+use Vengine\Render\Storages\MessageBuffer;
 
 class Tag implements TagInterface
 {
@@ -141,6 +142,10 @@ class Tag implements TagInterface
     {
         $innerHtml = "";
 
+        if (!empty($tag->_getHtml())) {
+            return $tag->_getHtml();
+        }
+
         if (!empty($tag->childTagCollection)) {
             /** @var Tag $child */
             foreach ($tag->childTagCollection as $child) {
@@ -186,6 +191,17 @@ class Tag implements TagInterface
             $openTag = "<{$name}{$attributes}>";
         }
 
+        if (strlen($innerText) >= 500) {
+            $key = sha1($innerText);
+            $buffer = MessageBuffer::getInstance()->getMessage($key);
+
+            if (!empty($buffer)) {
+                MessageBuffer::getInstance()->removeMessage($key);
+            }
+
+            $innerText = MessageBuffer::getInstance()->addMessage($innerText, $key, false)->getLastKey();
+        }
+
         return "{$openTag}{$innerText}{$innerHtml}{$closeTag}\n";
     }
 
@@ -194,6 +210,11 @@ class Tag implements TagInterface
         $this->html = $html;
 
         return $this;
+    }
+
+    public function _getHtml(): string
+    {
+        return $this->html;
     }
 
     protected function getStringHtmlAttributes(Tag $tag): string

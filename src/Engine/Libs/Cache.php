@@ -5,10 +5,6 @@ namespace Render\Engine\Libs;
 use Vengine\Cache\CacheManager;
 use Vengine\Cache\Drivers\TemplateCacheDriver;
 
-/**
- * @deprecated
- * @see use `vengine/cache` or other cache libs
- */
 class Cache
 {
     protected TemplateCacheDriver $cacheDriver;

@@ -3,12 +3,7 @@
 namespace Render\Engine\Data;
 
 use Render\Engine\DefaultManager;
-use Vengine\Render\RenderManager;
 
-/**
- * @deprecated
- * @see RenderManager
- */
 class Manager extends DefaultManager
 {
     protected array $style = [];

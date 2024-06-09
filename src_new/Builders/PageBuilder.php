@@ -26,6 +26,8 @@ class PageBuilder extends AbstractBuilder
      */
     protected array $templateBundleList = [];
 
+    protected HeadAsset $headAsset;
+
     /**
      * @throws RenderException
      */
@@ -41,7 +43,11 @@ class PageBuilder extends AbstractBuilder
         $head = (new Tag());
         $headChild = new TagCollection();
 
-        foreach ((new HeadAsset($title, $lang))->getTagCollection() as $headTag) {
+        if (empty($this->headAsset)) {
+            $this->headAsset = new HeadAsset($title, $lang);
+        }
+
+        foreach ($this->headAsset->getTagCollection() as $headTag) {
             $headChild->offsetSet($headTag);
         }
 
@@ -89,6 +95,13 @@ class PageBuilder extends AbstractBuilder
         $bundle->addTag($html);
 
         return $bundle;
+    }
+
+    public function setHeadAsset(HeadAsset $headAsset): static
+    {
+        $this->headAsset = $headAsset;
+
+        return $this;
     }
 
     public function addAssetBundle(AssetBundle $assetBundle): static

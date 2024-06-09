@@ -7,11 +7,15 @@ use Vengine\Cache\Drivers\TemplateCacheDriver;
 use Vengine\Render\Builders\PageBuilder;
 use Vengine\Render\Exceptions\RenderException;
 use Vengine\Render\Interfaces\BuilderInterface;
+use Vengine\Render\Storages\MessageBuffer;
 use Vengine\Render\Storages\VariableStorage;
 use Psr\SimpleCache\InvalidArgumentException;
+use Vengine\Render\Traits\SingletonTrait;
 
 class RenderManager
 {
+    use SingletonTrait;
+
     protected VariableStorage $variableStorage;
 
     protected BuilderInterface $builder;
@@ -22,12 +26,22 @@ class RenderManager
 
     private int $currentIteration = 0;
 
+    private string $tmpDir = '';
+
     public function __construct(?VariableStorage $variableStorage = null)
     {
+        $this->tmpDir = $_SERVER['DOCUMENT_ROOT'] . '/_tmp';
+
+        if (!is_dir($this->tmpDir)) {
+            mkdir($this->tmpDir);
+        }
+
         $this->variableStorage = $variableStorage ?? new VariableStorage();
 
         $this->builder = new PageBuilder();
         $this->cache = (new CacheManager())->template;
+
+        static::$_instance = $this;
     }
 
     public function setMainBuilder(BuilderInterface $builder): static
@@ -54,13 +68,13 @@ class RenderManager
             $this->builder->setDataKey($uniqueName);
         }
 
-        $dataKey = $this->builder->getDataKey() . $title . $lang;
+        $dataKey = $this->builder->getDataKey() . md5($title) . md5($lang);
 
         $_data = [];
 
-        $commentBlock = "<?php /* data-key: {$dataKey} */" . "\n" . "/** \n Default Variables: \n @var array \$_data" . "\n";
+        $commentBlock = "<?php /* data-key: {$dataKey} */" . "\n" . "/** \n Default Variables: \n* @var array \$_data" . "\n";
 
-        $commentBlock .= "* @var string \$title \n * @var string \$lang \n";
+        $commentBlock .= "* @var string \$title \n* @var string \$lang \n";
 
         foreach ($this->variableStorage->getVariables() as $name => $var) {
             if (!is_string($name)) {
@@ -86,28 +100,35 @@ class RenderManager
 
         $commentBlock .= "*/ \n ?> \n";
 
+        print "<!-- vEngine Render 3.0 https://vengine.ru/ --> \n";
+
         if (!$this->cache->getConfig()->isEnabled()) {
-            print $this->getHtml();
+            $tmpKey = sha1($dataKey) . '.php';
+            $tmpPath = $this->tmpDir . '/' . $tmpKey;
+
+            $html = $this->getMessageBuffer()->replaceMessages(
+                $this->getHtml()
+            );
+
+            file_put_contents($tmpPath, $html);
+
+            include $tmpPath;
 
             trigger_error(
                 'Attention! Cache is disabled, it is recommended to enable it for faster operation.',
                 E_USER_WARNING
             );
 
+            unlink($tmpPath);
+
             return;
         }
 
+        ob_start([$this->getMessageBuffer(), 'replaceMessages']);
+
         $cachePath = $this->getCachePath($dataKey);
         if (file_exists($cachePath)) {
-            ob_start();
-
             include $cachePath;
-
-            $result = ob_get_contents();
-
-            ob_clean();
-
-            print $result;
         } else {
             $tplPath = $this->compileTemplate($dataKey, $commentBlock);
 
@@ -117,6 +138,8 @@ class RenderManager
                 print 'compile error.';
             }
         }
+
+        ob_end_flush();
     }
 
     /**
@@ -174,6 +197,11 @@ class RenderManager
     public function getCache(): TemplateCacheDriver
     {
         return $this->cache;
+    }
+
+    public function getMessageBuffer(): MessageBuffer
+    {
+        return $this->builder->getMessageBuffer();
     }
 
     protected function getCachePath(string $key): string

@@ -8,16 +8,10 @@ use Render\Engine\Helpers\ErrorHelper;
 use Render\Engine\RenderInterface;
 use Render\Engine\Libs\Cache;
 use RuntimeException;
-use Vengine\Render\RenderManager;
 
-/**
- * @deprecated
- * @see RenderManager or Builders or Tag system
- */
 class RenderFactory
 {
     public const DEFAULT_RENDER = RenderPHP::class;
-    public const SMARTY_RENDER = RenderSmarty::class;
 
     private Manager $manager;
 

@@ -41,6 +41,13 @@ class TemplateBundle extends AbstractBundle
         return file_get_contents($this->path);
     }
 
+    public function setTemplateFolder(string $templateFolder): static
+    {
+        $this->templateFolder = $templateFolder;
+
+        return $this;
+    }
+
     public function getPath(): string
     {
         return $this->path;
