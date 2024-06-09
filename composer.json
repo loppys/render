@@ -3,14 +3,18 @@
   "type": "library",
   "autoload": {
     "psr-4": {
-      "Render\\": "src/"
+      "Render\\": "src/",
+      "Vengine\\Render\\": "src_new/"
     }
   },
   "license": "MIT",
   "require": {
     "php": ">=8.0",
-    "smarty/smarty": "^4.3",
-    "vengine/cache": "^1.0"
+    "vengine/cache": "^1.0",
+    "vengine/container": "*"
+  },
+  "conflict": {
+    "vengine/core": "<1.8.0"
   },
   "minimum-stability": "dev"
 }

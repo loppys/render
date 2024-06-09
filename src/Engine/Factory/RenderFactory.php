@@ -3,7 +3,6 @@
 namespace Render\Engine\Factory;
 
 use Render\Engine\Components\RenderPHP;
-use Render\Engine\Components\RenderSmarty;
 use Render\Engine\Data\Manager;
 use Render\Engine\Helpers\ErrorHelper;
 use Render\Engine\RenderInterface;
@@ -13,7 +12,6 @@ use RuntimeException;
 class RenderFactory
 {
     public const DEFAULT_RENDER = RenderPHP::class;
-    public const SMARTY_RENDER = RenderSmarty::class;
 
     private Manager $manager;
 

@@ -2,7 +2,7 @@
 
 namespace Render\Engine\Libs;
 
-class Smarty extends \Smarty
+class Smarty
 {
 
 }
